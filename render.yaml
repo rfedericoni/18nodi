@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: 18nodi
+    runtime: static
+    plan: free
+    branch: main
+    autoDeploy: true
+    buildCommand: mkdir -p public && cp index.html styles.css script.js public/ && cp -R assets public/
+    staticPublishPath: ./public
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=86400
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
